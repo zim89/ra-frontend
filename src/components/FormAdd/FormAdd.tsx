@@ -1,92 +1,101 @@
+import { FC, FormEvent, useState } from "react";
 import { Button, Group, Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
-import { addNote } from "../../redux/notesReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import { IconCalendar } from "@tabler/icons-react";
-import { FC, useState } from "react";
 
-// interface AddPizzaFormProps {
-//   addPizza: (newPizza: Pizza) => void;
-// }
+import { addNote } from "../../redux/notesReducer";
+import categories from "../../data/category.json";
 
-const categories = [
-  { value: "Task", label: "Task" },
-  { value: "Quote", label: "Quote" },
-  { value: "Idea", label: "Idea" },
-  { value: "Random Thought", label: "Random Thought" },
-];
+interface FormAddProps {
+  onClose: () => void;
+}
 
-const initState = {
-  name: "",
-  price: "",
-  img: "",
+type NewNote = {
+  id: string;
+  created_at: string;
+  name: string;
+  category: string | null;
+  content: string;
+  dates: string[];
+  isArchived: boolean;
 };
 
-const FormAdd: FC = ({ onClose }) => {
-  const [note, setNote] = useState<{
-    title: string;
-    price: string;
-    img: string;
-  }>(initState);
-
+const FormAdd: FC<FormAddProps> = ({ onClose }) => {
   const dispatch = useDispatch();
-  const form = useForm({
-    initialValues: {
-      name: "",
-      category: "Task",
-      content: "",
-      date: null,
-    },
-  });
 
-  const handleSubmit = ({ name, category, content, date }) => {
-    const dates = [];
-    date ? dates.push(date.toLocaleDateString()) : null;
-    dispatch(
-      addNote({
-        id: nanoid(),
-        name,
-        category,
-        content,
-        dates,
-        created_at: new Date().toLocaleString(),
-        isArchived: false,
-      })
-    );
-    onClose();
+  const [name, setName] = useState<string>("");
+  const [category, setCategory] = useState<string | null>("null");
+  const [content, setContent] = useState<string>("");
+  const [date, setDate] = useState<Date | null>(null);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const newNote: NewNote = {
+      id: nanoid(),
+      created_at: new Date().toLocaleString(),
+      name,
+      category,
+      content,
+      dates: [],
+      isArchived: false,
+    };
+
+    date ? newNote.dates.push(date.toLocaleDateString()) : null;
+
+    if (name && category && content) {
+      dispatch(addNote(newNote));
+      onClose();
+    } else {
+      alert("Please, fill all fields with asterisk");
+    }
   };
 
   return (
     <>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        {/* 
-        <TextInput withAsterisk label="Name:" {...form.getInputProps("name")} />
-         */}
-        <TextInput withAsterisk label="Name:" {...form.getInputProps("name")} />
+      <form onSubmit={handleSubmit}>
+        <TextInput
+          mt={16}
+          withAsterisk
+          label="Name:"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.currentTarget.value)}
+        />
 
         <Select
+          mt={16}
           label="Category:"
           withAsterisk
-          placeholder="Pick one"
+          placeholder="Pick category"
           data={categories}
-          {...form.getInputProps("category")}
+          name="category"
+          value={category}
+          onChange={setCategory}
         />
 
         <TextInput
+          mt={16}
           withAsterisk
           label="Content:"
-          {...form.getInputProps("content")}
+          name="content"
+          value={content}
+          onChange={(e) => setContent(e.currentTarget.value)}
         />
 
         <DatePickerInput
+          mt={16}
+          minDate={new Date()}
+          valueFormat="DD.MM.YYYY"
           icon={<IconCalendar size="1.1rem" stroke={1.5} />}
           label="Set Date:"
           placeholder="Date input"
           maw={400}
           mx="auto"
-          {...form.getInputProps("date")}
+          name="date"
+          value={date}
+          onChange={setDate}
         />
 
         <Group position="right" mt="md">
@@ -96,4 +105,5 @@ const FormAdd: FC = ({ onClose }) => {
     </>
   );
 };
+
 export default FormAdd;
