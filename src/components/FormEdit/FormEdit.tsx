@@ -1,99 +1,125 @@
+import { FC, FormEvent, useState } from "react";
 import { Button, Group, Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { useForm } from "@mantine/form";
-import { useDispatch } from "react-redux";
-import { editNote } from "../../redux/notesReducer";
+import { useDispatch, useSelector } from "react-redux";
 import { IconCalendar } from "@tabler/icons-react";
-import { useState } from "react";
 
-const categories = [
-  { value: "Task", label: "Task" },
-  { value: "Quote", label: "Quote" },
-  { value: "Idea", label: "Idea" },
-  { value: "Random Thought", label: "Random Thought" },
-];
+import { editNote } from "../../redux/notesReducer";
+import categories from "../../data/category.json";
 
-const FormEdit = ({ note, onClose }) => {
-  const [dateValue, setDateValue] = useState<Date | null>(null);
-  const { id, dates } = note;
+interface FormEditProps {
+  noteId: string;
+  onClose: () => void;
+}
+
+type Note = {
+  id: string;
+  created_at: string;
+  name: string;
+  category: string | null;
+  content: string;
+  dates: string[];
+  isArchived: boolean;
+};
+
+const FormEdit: FC<FormEditProps> = ({ noteId, onClose }) => {
   const dispatch = useDispatch();
+  const notes = useSelector(({ notes }) => notes.items);
+  const note = notes.find((note: Note) => note.id === noteId);
 
-  const form = useForm({
-    initialValues: {
-      name: note.name,
-      category: note.category,
-      content: note.content,
-      dates: dates,
-    },
-  });
+  const [name, setName] = useState<string>(note.name);
+  const [category, setCategory] = useState<string | null>(note.category);
+  const [content, setContent] = useState<string>(note.content);
+  const [date, setDate] = useState<Date | null>(null);
 
-  const handleSubmit = (values: {
-    name: string;
-    category: string;
-    content: string;
-  }) => {
-    const { name, category, content } = values;
-    let newDate: string | null;
-    dateValue ? (newDate = dateValue.toLocaleDateString()) : (newDate = null);
-    dispatch(
-      editNote({
-        id,
-        name,
-        category,
-        content,
-        date: newDate,
-      })
-    );
-    onClose();
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const editedNote = {
+      id: note.id,
+      name,
+      category,
+      content,
+      date: date ? date.toLocaleDateString() : null,
+    };
+
+    !name || !category || !content
+      ? alert("Please, fill all fields with asterisk")
+      : onClose();
+
+    if (
+      (date ||
+        name !== note.name ||
+        category !== note.category ||
+        content !== note.content) &&
+      name &&
+      category &&
+      content
+    ) {
+      dispatch(editNote(editedNote));
+      onClose();
+    }
   };
 
   return (
     <>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <TextInput withAsterisk label="Name:" {...form.getInputProps("name")} />
+      <form onSubmit={handleSubmit}>
+        <TextInput
+          mt={16}
+          withAsterisk
+          label="Name:"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.currentTarget.value)}
+        />
 
         <Select
+          mt={16}
           label="Category:"
           withAsterisk
-          placeholder="Pick one"
+          placeholder="Pick category"
           data={categories}
-          {...form.getInputProps("category")}
+          name="category"
+          value={category}
+          onChange={setCategory}
         />
 
         <TextInput
+          mt={16}
           withAsterisk
           label="Content:"
-          {...form.getInputProps("content")}
+          name="content"
+          value={content}
+          onChange={(e) => setContent(e.currentTarget.value)}
         />
 
         <TextInput
+          mt={16}
           label="Dates:"
-          value={dates.length > 0 ? dates.join(", ") : ""}
+          value={note.dates.length > 0 ? note.dates.join(", ") : "No dates"}
           disabled
         />
 
         <DatePickerInput
-          label="Pick date"
-          placeholder="Pick date"
-          value={dateValue}
-          onChange={setDateValue}
-          mx="auto"
-          maw={400}
-        />
-        {/* <DatePickerInput
+          mt={16}
+          minDate={new Date()}
+          valueFormat="DD.MM.YYYY"
           icon={<IconCalendar size="1.1rem" stroke={1.5} />}
-          label="Set Date:"
+          label="Set new Date:"
           placeholder="Date input"
           maw={400}
           mx="auto"
-          {...form.getInputProps("date")}
-        /> */}
+          name="date"
+          value={date}
+          onChange={setDate}
+        />
 
         <Group position="right" mt="md">
-          <Button type="submit">Save</Button>
+          <Button type="submit">Save Note</Button>
         </Group>
       </form>
     </>
   );
 };
+
 export default FormEdit;

@@ -34,7 +34,7 @@ const NoteItem = ({ note }) => {
       </td>
 
       <Modal opened={opened} onClose={close} title="Edit note:">
-        <FormEdit onClose={close} note={note} />
+        <FormEdit onClose={close} noteId={id} />
       </Modal>
     </>
   );

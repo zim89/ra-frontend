@@ -89,8 +89,8 @@ const notesSlice = createSlice({
 
       state.items[index] = {
         ...state.items[index],
-        category: action.payload.category,
         name: action.payload.name,
+        category: action.payload.category,
         content: action.payload.content,
       };
     },
