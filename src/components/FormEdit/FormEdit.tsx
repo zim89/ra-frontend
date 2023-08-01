@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { Button, Group, Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,7 +70,9 @@ const FormEdit: FC<FormEditProps> = ({ noteId, onClose }) => {
           label="Name:"
           name="name"
           value={name}
-          onChange={(e) => setName(e.currentTarget.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setName(e.currentTarget.value)
+          }
         />
 
         <Select
@@ -90,7 +92,9 @@ const FormEdit: FC<FormEditProps> = ({ noteId, onClose }) => {
           label="Content:"
           name="content"
           value={content}
-          onChange={(e) => setContent(e.currentTarget.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setContent(e.currentTarget.value)
+          }
         />
 
         <TextInput
@@ -113,7 +117,6 @@ const FormEdit: FC<FormEditProps> = ({ noteId, onClose }) => {
           value={date}
           onChange={setDate}
         />
-
         <Group position="right" mt="md">
           <Button type="submit">Save Note</Button>
         </Group>

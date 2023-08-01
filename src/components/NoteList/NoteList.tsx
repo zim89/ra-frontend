@@ -1,24 +1,30 @@
-import {
-  Table,
-  Checkbox,
-  Flex,
-  Modal,
-  Button,
-  Group,
-  Box,
-} from "@mantine/core";
-import NoteItem from "../NoteItem/NoteItem";
-import { useSelector, useDispatch } from "react-redux";
-import { setFilter } from "../../redux/notesReducer";
+import { FC } from "react";
+import { Table, Checkbox, Modal, Button, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import FormAdd from "../FormAdd/FormAdd";
+import { useSelector, useDispatch } from "react-redux";
 
-const NoteList = () => {
-  const [opened, { open, close }] = useDisclosure(false);
+import NoteItem from "../NoteItem/NoteItem";
+import FormAdd from "../FormAdd/FormAdd";
+import { setFilter } from "../../redux/notesReducer";
+
+type Note = {
+  id: string;
+  created_at: string;
+  name: string;
+  category: string | null;
+  content: string;
+  dates: string[];
+  isArchived: boolean;
+};
+
+const NoteList: FC = () => {
   const dispatch = useDispatch();
+  const [opened, { open, close }] = useDisclosure(false);
   const notes = useSelector(({ notes }) => notes.items);
   const filter = useSelector(({ notes }) => notes.isArchived);
-  const filteredNotes = notes.filter((item) => item.isArchived === filter);
+  const filteredNotes = notes.filter(
+    (item: Note) => item.isArchived === filter
+  );
 
   return (
     <>
@@ -27,7 +33,9 @@ const NoteList = () => {
           labelPosition="left"
           label="Show archived notes"
           color="indigo"
-          onChange={(e) => dispatch(setFilter(e.currentTarget.checked))}
+          onChange={(e: React.BaseSyntheticEvent) =>
+            dispatch(setFilter(e.currentTarget.checked))
+          }
         />
 
         <Button size="xs" onClick={open}>
@@ -43,11 +51,11 @@ const NoteList = () => {
             <th>Category</th>
             <th>Content</th>
             <th>Dates</th>
-            <th width="150px">Actions</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredNotes.map((note) => (
+          {filteredNotes.map((note: Note) => (
             <tr key={note.id}>
               <NoteItem note={note} />
             </tr>

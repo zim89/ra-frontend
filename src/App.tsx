@@ -1,5 +1,5 @@
-import { Container, MantineProvider } from "@mantine/core";
 import { FC } from "react";
+import { Container, MantineProvider } from "@mantine/core";
 
 import NoteList from "./components/NoteList/NoteList";
 import StatsList from "./components/StatsList/StatsList";

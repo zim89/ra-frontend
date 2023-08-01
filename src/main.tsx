@@ -11,7 +11,7 @@ import "dayjs/locale/ru";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={<p>loading...</p>} persistor={persistor}>
+      <PersistGate loading={<p>loading data...</p>} persistor={persistor}>
         <DatesProvider settings={{ locale: "ru" }}>
           <App />
         </DatesProvider>
