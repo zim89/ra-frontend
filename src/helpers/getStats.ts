@@ -1,11 +1,14 @@
 import categories from "../data/category.json";
+import { Note, Stats } from "../types";
 
-const getStats = (data) => {
-  const stats: string[] = [];
+const getStats = (data: Note[]) => {
+  const stats: Stats[] = [];
 
   categories.forEach((cat) => {
-    const item = { category: cat.label, active: 0, archived: 0 };
-    const filteredData = data.filter((note) => note.category === cat.label);
+    const item: Stats = { category: cat.label, active: 0, archived: 0 };
+    const filteredData: Note[] = data.filter(
+      (note: Note) => note.category === cat.label
+    );
     filteredData.forEach((el) => {
       el.isArchived
         ? (item.archived = item.archived + 1)

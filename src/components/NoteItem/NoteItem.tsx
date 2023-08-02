@@ -4,8 +4,14 @@ import { useDispatch } from "react-redux";
 import { deleteNote, archiveNote } from "../../redux/notesReducer";
 import { useDisclosure } from "@mantine/hooks";
 import FormEdit from "../FormEdit/FormEdit";
+import { FC } from "react";
+import { Note } from "../../types";
 
-const NoteItem = ({ note }) => {
+interface NoteItemProps {
+  note: Note;
+}
+
+const NoteItem: FC<NoteItemProps> = ({ note }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { id, name, created_at, category, content, dates } = note;
   const dispatch = useDispatch();

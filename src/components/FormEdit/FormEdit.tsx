@@ -6,21 +6,12 @@ import { IconCalendar } from "@tabler/icons-react";
 
 import { editNote } from "../../redux/notesReducer";
 import categories from "../../data/category.json";
+import { EditedNote, Note } from "../../types";
 
 interface FormEditProps {
   noteId: string;
   onClose: () => void;
 }
-
-type Note = {
-  id: string;
-  created_at: string;
-  name: string;
-  category: string | null;
-  content: string;
-  dates: string[];
-  isArchived: boolean;
-};
 
 const FormEdit: FC<FormEditProps> = ({ noteId, onClose }) => {
   const dispatch = useDispatch();
@@ -35,7 +26,7 @@ const FormEdit: FC<FormEditProps> = ({ noteId, onClose }) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const editedNote = {
+    const editedNote: EditedNote = {
       id: note.id,
       name,
       category,

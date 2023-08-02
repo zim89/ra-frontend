@@ -2,8 +2,9 @@ import { Table } from "@mantine/core";
 import { useSelector } from "react-redux";
 import getStats from "../../helpers/getStats";
 import StatsItem from "../StatsItem/StatsItem";
+import { FC } from "react";
 
-const StatsList = () => {
+const StatsList: FC = () => {
   const notes = useSelector(({ notes }) => notes.items);
   const stats = getStats(notes);
   const hasData = stats.filter((stat) => stat.active || stat.archived);

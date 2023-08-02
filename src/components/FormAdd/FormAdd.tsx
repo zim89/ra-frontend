@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { Button, Group, Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDispatch } from "react-redux";
@@ -7,20 +7,11 @@ import { IconCalendar } from "@tabler/icons-react";
 
 import { addNote } from "../../redux/notesReducer";
 import categories from "../../data/category.json";
+import { Note } from "../../types";
 
 interface FormAddProps {
   onClose: () => void;
 }
-
-type NewNote = {
-  id: string;
-  created_at: string;
-  name: string;
-  category: string | null;
-  content: string;
-  dates: string[];
-  isArchived: boolean;
-};
 
 const FormAdd: FC<FormAddProps> = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -32,7 +23,7 @@ const FormAdd: FC<FormAddProps> = ({ onClose }) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newNote: NewNote = {
+    const newNote: Note = {
       id: nanoid(),
       created_at: new Date().toLocaleString(),
       name,
@@ -61,7 +52,9 @@ const FormAdd: FC<FormAddProps> = ({ onClose }) => {
           label="Name:"
           name="name"
           value={name}
-          onChange={(e) => setName(e.currentTarget.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setName(e.currentTarget.value)
+          }
         />
 
         <Select
@@ -81,7 +74,9 @@ const FormAdd: FC<FormAddProps> = ({ onClose }) => {
           label="Content:"
           name="content"
           value={content}
-          onChange={(e) => setContent(e.currentTarget.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setContent(e.currentTarget.value)
+          }
         />
 
         <DatePickerInput

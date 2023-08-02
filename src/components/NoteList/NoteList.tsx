@@ -6,16 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import NoteItem from "../NoteItem/NoteItem";
 import FormAdd from "../FormAdd/FormAdd";
 import { setFilter } from "../../redux/notesReducer";
-
-type Note = {
-  id: string;
-  created_at: string;
-  name: string;
-  category: string | null;
-  content: string;
-  dates: string[];
-  isArchived: boolean;
-};
+import { Note } from "../../types";
 
 const NoteList: FC = () => {
   const dispatch = useDispatch();
@@ -51,7 +42,7 @@ const NoteList: FC = () => {
             <th>Category</th>
             <th>Content</th>
             <th>Dates</th>
-            <th>Actions</th>
+            <th className="action">Actions</th>
           </tr>
         </thead>
         <tbody>
